@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Verify a Provenshot photo</title>
+<style>
+  :root {
+    --deep:#0E2A47; --blue:#1C5FB0; --green:#1FAE6A; --green-d:#138a52;
+    --amber:#E0962A; --red:#D64545; --slate:#5E7184; --mist:#E3EAF1; --ink:#15212E;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:#F4F7FA; line-height:1.5;
+    min-height:100vh; -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:680px; margin:0 auto; padding:28px 20px 64px; }
+  header { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+  .logo {
+    width:40px; height:40px; border-radius:11px; flex:0 0 auto;
+    background:radial-gradient(120% 120% at 30% 20%, #2a6fc7, var(--deep));
+    display:grid; place-items:center; color:#fff; font-size:22px;
+  }
+  h1 { font-size:21px; font-weight:800; color:var(--deep); letter-spacing:-.2px; }
+  .sub { color:var(--slate); font-size:14px; margin:4px 0 22px; }
+  .drop {
+    border:2px dashed #b9c8d8; border-radius:18px; background:#fff;
+    padding:38px 22px; text-align:center; cursor:pointer; transition:.15s;
+  }
+  .drop:hover, .drop.over { border-color:var(--blue); background:#F7FBFF; }
+  .drop .big { font-size:16px; font-weight:700; color:var(--deep); }
+  .drop .small { font-size:13px; color:var(--slate); margin-top:6px; }
+  .drop .icon { font-size:34px; }
+  input[type=file] { display:none; }
+  .row { display:flex; gap:10px; align-items:center; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+  .ghost {
+    font-size:13px; color:var(--blue); background:none; border:1px solid var(--mist);
+    padding:8px 14px; border-radius:10px; cursor:pointer; font-weight:600;
+  }
+  .ghost.set { color:var(--green-d); border-color:var(--green); }
+
+  #result { margin-top:22px; display:none; }
+  .verdict {
+    border-radius:18px; padding:24px; color:#fff; display:flex; gap:16px; align-items:center;
+  }
+  .verdict .shield { font-size:46px; line-height:1; }
+  .verdict h2 { font-size:23px; font-weight:800; }
+  .verdict p { font-size:13.5px; opacity:.94; margin-top:3px; }
+  .v-authentic { background:linear-gradient(135deg,#22b873,#138a52); }
+  .v-edited    { background:linear-gradient(135deg,#eaa53e,#c47e1e); }
+  .v-invalid   { background:linear-gradient(135deg,#e05a5a,#b83636); }
+  .v-noData    { background:linear-gradient(135deg,#7e90a2,#5e7184); }
+
+  .preview { margin-top:14px; border-radius:14px; overflow:hidden; border:1px solid var(--mist); background:#000; }
+  .preview img { width:100%; display:block; max-height:340px; object-fit:contain; }
+
+  .checks { background:#fff; border:1px solid var(--mist); border-radius:14px; margin-top:14px; overflow:hidden; }
+  .check { display:flex; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid var(--mist); font-weight:600; font-size:14px; }
+  .check:last-child { border-bottom:none; }
+  .check .m { font-size:18px; width:20px; text-align:center; }
+  .ok  { color:var(--green-d); } .bad { color:var(--red); }
+
+  .trust { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+  @media (max-width:560px){ .trust { grid-template-columns:1fr; } }
+  .tcol { border-radius:14px; padding:14px 16px; border:1px solid var(--mist); background:#fff; }
+  .tcol h4 { font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+  .tcol ul { list-style:none; }
+  .tcol li { font-size:13px; padding:5px 0 5px 18px; position:relative; color:var(--ink); }
+  .tcol li::before { position:absolute; left:0; top:5px; }
+  .proves h4 { color:var(--green-d); } .proves li::before { content:'✓'; color:var(--green); }
+  .limits h4 { color:var(--amber); } .limits li::before { content:'!'; color:var(--amber); font-weight:800; }
+  .meta { background:#fff; border:1px solid var(--mist); border-radius:14px; margin-top:14px; padding:16px 18px; }
+  .meta h3 { font-size:13px; font-weight:800; color:var(--deep); margin-bottom:10px; text-transform:uppercase; letter-spacing:.6px; }
+  .kv { display:flex; padding:5px 0; font-size:13.5px; }
+  .kv .k { color:var(--slate); width:108px; flex:0 0 auto; }
+  .kv .v { color:var(--ink); word-break:break-word; }
+  .note { color:var(--slate); font-size:12px; margin-top:16px; }
+  .err { color:var(--red); font-weight:600; margin-top:14px; }
+  .badge { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px; }
+  .badge.hw { background:rgba(31,174,106,.12); color:var(--green-d); }
+  .badge.sw { background:rgba(94,113,132,.14); color:var(--slate); }
+  footer { color:var(--slate); font-size:12px; margin-top:28px; text-align:center; }
+  .spin { display:inline-block; width:16px; height:16px; border:2px solid var(--mist); border-top-color:var(--blue); border-radius:50%; animation:s .7s linear infinite; vertical-align:-3px; }
+  @keyframes s { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">🛡️</div>
+    <div>
+      <h1>Verify a Provenshot photo</h1>
+    </div>
+  </header>
+  <p class="sub">Drop a sealed photo below. It is checked entirely in your browser —
+    nothing is uploaded. This recomputes the image's pixel hash and verifies the
+    hardware signature, so you can confirm it wasn't edited since capture.</p>
+
+  <label class="drop" id="drop">
+    <div class="icon">📷</div>
+    <div class="big">Drop a Provenshot photo, or click to choose</div>
+    <div class="small">JPEG with an embedded seal · the evidence travels inside the image</div>
+    <input type="file" id="file" accept=".jpg,.jpeg,.png,.webp,image/*" />
+  </label>
+  <div class="row">
+    <button class="ghost" id="sidecarBtn" type="button">+ Add a .json sidecar (optional)</button>
+    <input type="file" id="sidecar" accept=".json,application/json" />
+  </div>
+
+  <div id="status"></div>
+  <div id="result"></div>
+
+  <footer>
+    Tamper-evident means the content hasn't changed since it was sealed.
+    Verification runs offline in your browser.
+  </footer>
+</div>
+
+<script src="verifier.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+let sidecarText = '';
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(',')[1] || '');
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+function fileToText(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result));
+    r.onerror = rej;
+    r.readAsText(file);
+  });
+}
+function fileToURL(file) { return URL.createObjectURL(file); }
+
+const STATUS = {
+  authentic: { cls:'v-authentic', shield:'🛡️', title:'Authentic' },
+  edited:    { cls:'v-edited',    shield:'⚠️',  title:'Image edited' },
+  invalid:   { cls:'v-invalid',   shield:'⛔',  title:'Tampered / invalid' },
+  noData:    { cls:'v-noData',    shield:'❔',  title:'No evidence found' },
+};
+
+function check(label, ok) {
+  return `<div class="check"><span class="m ${ok?'ok':'bad'}">${ok?'✓':'✗'}</span>
+    <span>${label}</span></div>`;
+}
+function kv(k, v) { return v == null || v === '' ? '' :
+  `<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`; }
+function esc(s) { return s == null ? '' : String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function render(out, imgURL) {
+  const s = STATUS[out.status] || STATUS.invalid;
+  let html = `<div class="verdict ${s.cls}"><div class="shield">${s.shield}</div>
+    <div><h2>${s.title}</h2><p>${esc(out.message)}</p></div></div>`;
+  if (imgURL) html += `<div class="preview"><img src="${imgURL}" alt="checked photo"/></div>`;
+
+  if (out.status !== 'noData') {
+    html += `<div class="checks">
+      ${check('Hardware signature valid', out.signatureValid)}
+      ${check('Image pixels unchanged', out.pixelHashMatch)}
+      ${check('Metadata intact', out.contentHashMatch)}
+    </div>`;
+  }
+
+  // Honest scope: what a green result does — and does not — prove.
+  const tr = out.trust;
+  if (tr) {
+    const proves = tr.contentIntact
+      ? `<div class="tcol proves"><h4>What this proves</h4><ul>${tr.proves.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>`
+      : '';
+    html += `<div class="trust">${proves}
+      <div class="tcol limits"><h4>What it can't prove</h4><ul>${tr.limits.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>
+    </div>`;
+  }
+
+  const sc = out.sidecar;
+  if (sc) {
+    const cap = sc.capture || {}, loc = cap.location || {}, dev = cap.device || {}, cr = sc.crypto || {};
+    let when = cap.capturedAtUtc || '';
+    try { when = new Date(cap.capturedAtUtc).toLocaleString(); } catch (e) {}
+    const tz = cap.timeZoneId ? ` (${esc(cap.timeZoneId)})` : '';
+    const coords = (loc.latitude != null)
+      ? `${loc.latitude.toFixed(6)}, ${loc.longitude.toFixed(6)}` : '';
+    const hwBadge = cr.secureHardware
+      ? `<span class="badge hw">secure hardware</span>`
+      : `<span class="badge sw">software key</span>`;
+    html += `<div class="meta"><h3>Sealed evidence</h3>
+      ${kv('When', esc(when) + tz)}
+      ${kv('Where', esc(cap.address))}
+      ${kv('Coordinates', coords)}
+      ${kv('Device', esc([dev.model, dev.osVersion].filter(Boolean).join(' · ')))}
+      ${kv('Project', esc(cap.projectName))}
+      ${kv('Signature', esc(cr.signatureAlgorithm))}
+      ${kv('Key id', esc(cr.keyId))}
+      ${kv('Key', hwBadge)}
+      ${kv('Location trust', esc(cap.locationTrust))}
+    </div>
+    <p class="note">The full address and coordinates above are part of the signed
+      record. A green “Authentic” means every pixel and every field is unchanged
+      since the photo was sealed on the device.</p>`;
+  }
+  $('result').innerHTML = html;
+  $('result').style.display = 'block';
+}
+
+async function verifyFile(file) {
+  if (!file) return;
+  $('result').style.display = 'none';
+  $('status').innerHTML = `<p class="note"><span class="spin"></span> Decoding image &amp; checking the signature…</p>`;
+  try {
+    const b64 = await fileToBase64(file);
+    // Yield so the spinner paints before the (synchronous) verify runs.
+    await new Promise(r => setTimeout(r, 30));
+    const json = window.provenshotVerify(b64, sidecarText || '');
+    const out = JSON.parse(json);
+    $('status').innerHTML = '';
+    render(out, fileToURL(file));
+  } catch (e) {
+    $('status').innerHTML = `<p class="err">Could not read that file: ${esc(e.message || e)}</p>`;
+  }
+}
+
+// --- wire up drag/drop + pickers ---
+const drop = $('drop');
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) verifyFile(f); });
+$('file').addEventListener('change', e => verifyFile(e.target.files[0]));
+
+$('sidecarBtn').addEventListener('click', () => $('sidecar').click());
+$('sidecar').addEventListener('change', async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  sidecarText = await fileToText(f);
+  const b = $('sidecarBtn');
+  b.textContent = `✓ Sidecar: ${f.name}`;
+  b.classList.add('set');
+});
+</script>
+</body>
+</html>
