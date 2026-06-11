@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy Policy — Provenshot</title>
+<style>
+  :root { --ink:#0E2A47; --slate:#5B6B7B; --mist:#E7ECF1; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+         color:var(--ink); background:#F7F9FB; line-height:1.6; }
+  main { max-width:720px; margin:0 auto; padding:48px 24px 80px; }
+  h1 { font-size:28px; letter-spacing:-.5px; }
+  h2 { font-size:18px; margin-top:32px; }
+  p, li { color:#2A3B4D; font-size:15px; }
+  .meta { color:var(--slate); font-size:13px; }
+  .card { background:#fff; border:1px solid var(--mist); border-radius:14px; padding:18px 20px; margin:18px 0; }
+  a { color:var(--ink); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Provenshot Privacy Policy</h1>
+  <p class="meta">Effective date: June 9, 2026 · Contact: <a href="mailto:support@provenshot.app">support@provenshot.app</a></p>
+
+  <div class="card">
+    <b>Summary: Provenshot has no accounts, no analytics, and no server that
+    receives your photos or location. Your photos, location data, and
+    cryptographic keys stay on your device.</b>
+  </div>
+
+  <h2>What the app stores — on your device only</h2>
+  <ul>
+    <li><b>Sealed photos and evidence records</b> (time, GPS coordinates,
+      address, device model, cryptographic hashes and signatures) are stored in
+      the app's private storage on your phone. They leave the device only when
+      <i>you</i> share or export them.</li>
+    <li><b>Signing keys</b> are generated inside your device's secure hardware
+      (Apple Secure Enclave / Android Keystore) and cannot be exported — by us
+      or by you.</li>
+    <li><b>Settings</b> (watermark template, toggles) are stored locally.</li>
+  </ul>
+
+  <h2>Data that leaves your device, and why</h2>
+  <ul>
+    <li><b>Map thumbnails:</b> to draw the small map on the watermark, the app
+      requests a map tile from a tile server (OpenStreetMap, or AMap inside
+      mainland China). That request necessarily includes the approximate area
+      of the tile. Tiles are cached on-device so repeat captures often need no
+      request at all.</li>
+    <li><b>Reverse geocoding:</b> converting coordinates to a street address
+      uses your phone's built-in geocoding service (Apple/Google), subject to
+      your OS vendor's privacy policy.</li>
+    <li><b>Purchases:</b> the optional one-time unlock is processed entirely by
+      the App Store / Google Play. We never see payment details.</li>
+  </ul>
+  <p>That is the complete list. The app contains no advertising or analytics
+  SDKs and makes no other network requests.</p>
+
+  <h2>Permissions</h2>
+  <ul>
+    <li><b>Camera</b> — to take photos.</li>
+    <li><b>Location</b> — to stamp and seal the capture location. Used on
+      device; never uploaded by us.</li>
+    <li><b>Photo library (add-only / picker)</b> — only to save a copy of a
+      sealed photo when you turn that on, or to open a photo you choose to
+      verify.</li>
+  </ul>
+
+  <h2>The verify page</h2>
+  <p><a href="/verify/">provenshot.app/verify</a> is a static page.
+  Verification runs entirely inside your browser; the photo you drop in is
+  <b>never uploaded</b> — the page makes no network request with your file.
+  The page's verification code is open source
+  (<a href="https://github.com/xmasdong/provenshot-verify">source &amp; format
+  specification</a>).</p>
+
+  <h2>Your data, your control</h2>
+  <p>Deleting a photo in the app permanently removes it and its evidence
+  record from your device. Uninstalling the app removes everything. We cannot
+  delete anything for you — we never had it.</p>
+
+  <h2>Children</h2>
+  <p>Provenshot is a documentation tool, is not directed at children, and
+  collects no personal data from anyone.</p>
+
+  <h2>Changes</h2>
+  <p>If a future version ever changes any of the above (for example an
+  optional cloud feature), this policy will be updated first and the change
+  will be opt-in.</p>
+</main>
+</body>
+</html>

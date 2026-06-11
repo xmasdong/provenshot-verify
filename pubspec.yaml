@@ -1,0 +1,13 @@
+name: provenshot_verifier
+description: "Reference implementation of the Provenshot evidence verification (see SPEC.md). Compile src/verify_web.dart to reproduce verify/verifier.js."
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  crypto: ^3.0.6
+  pointycastle: ^3.9.1
+  asn1lib: ^1.5.3
+  image: ^4.3.0
