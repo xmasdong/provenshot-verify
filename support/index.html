@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Support — Provenshot</title>
+<style>
+  :root { --ink:#0E2A47; --slate:#5B6B7B; --green:#1E8E5A; --mist:#E7ECF1; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+         color:var(--ink); background:#F7F9FB; line-height:1.6; }
+  main { max-width:720px; margin:0 auto; padding:48px 24px 80px; }
+  h1 { font-size:28px; letter-spacing:-.5px; }
+  h2 { font-size:17px; margin:28px 0 6px; }
+  p, li { color:#2A3B4D; font-size:15px; }
+  .card { background:#fff; border:1px solid var(--mist); border-radius:14px; padding:18px 20px; margin:18px 0; }
+  a { color:var(--ink); }
+  .muted { color:var(--slate); font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Provenshot Support</h1>
+
+  <div class="card">
+    <b>Contact:</b> <a href="mailto:support@provenshot.app">support@provenshot.app</a><br/>
+    <span class="muted">We aim to reply within 2 business days.</span>
+  </div>
+
+  <h2>Verification says "No evidence found"</h2>
+  <p>The photo was probably sent through a chat app, which re-compresses
+  images and strips the embedded record. Ask the sender to share the photo
+  <b>as a file / document attachment</b> (or as a Provenshot evidence pack
+  .zip), not as an inline chat photo, and verify that original file at
+  <a href="/verify/">provenshot.app/verify</a>.</p>
+
+  <h2>Verification says "Tampered / Image edited"</h2>
+  <p>That is the product working: the file's pixels no longer match what was
+  sealed at capture. Any edit, crop, filter, or re-compression does this.
+  Request the original sealed file.</p>
+
+  <h2>The address on the stamp is wrong</h2>
+  <p>Street addresses come from your phone's reverse-geocoding service and can
+  be imprecise. Tap the watermark card before shooting to correct the address
+  — your edit is recorded as a manual entry in the signed record. The GPS
+  coordinates themselves are always recorded as measured.</p>
+
+  <h2>Where are my photos stored?</h2>
+  <p>In the app's private vault on your phone — nothing is uploaded. Turn on
+  <i>Settings → Save a copy to Photos</i> to also keep copies in your photo
+  library. Deleting a photo in Provenshot permanently removes it and its
+  record. See the <a href="/privacy/">privacy policy</a>.</p>
+
+  <h2>Purchases &amp; refunds</h2>
+  <p>The one-time unlock is processed by the App Store / Google Play. Restore
+  it on a new phone via <i>Unlock → Restore purchase</i>. Refunds are handled
+  by Apple/Google through their standard refund process.</p>
+
+  <h2>How do I verify a photo without the app?</h2>
+  <p>Open <a href="/verify/">provenshot.app/verify</a> in any browser and drop
+  the original file in. Verification runs inside your browser — the photo is
+  never uploaded. The verifier is open source:
+  <a href="https://github.com/xmasdong/provenshot-verify">source &amp; format
+  spec</a>.</p>
+
+  <p class="muted" style="margin-top:32px">
+    <a href="/">Home</a> · <a href="/verify/">Verify a photo</a> ·
+    <a href="/privacy/">Privacy policy</a>
+  </p>
+</main>
+</body>
+</html>
