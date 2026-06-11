@@ -25,6 +25,7 @@
   h1 { font-size:21px; font-weight:800; color:var(--deep); letter-spacing:-.2px; }
   .sub { color:var(--slate); font-size:14px; margin:4px 0 22px; }
   .drop {
+    display:block; /* <label> is inline by default -> border/bg fragment */
     border:2px dashed #b9c8d8; border-radius:18px; background:#fff;
     padding:38px 22px; text-align:center; cursor:pointer; transition:.15s;
   }
@@ -104,7 +105,7 @@
     <input type="file" id="file" accept=".jpg,.jpeg,.png,.webp,image/*" />
   </label>
   <div class="row">
-    <button class="ghost" id="sidecarBtn" type="button">+ Add a .json sidecar (optional)</button>
+    <button class="ghost" id="sidecarBtn" type="button">+ Add the photo's .json record (optional)</button>
     <input type="file" id="sidecar" accept=".json,application/json" />
   </div>
 
